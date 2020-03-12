@@ -17,7 +17,7 @@ let courseSchema = new mongoose.Schema({
 });
 
 //Model = Collection = Tables
-let courseModel = mongoose.model("courses",courseSchema); ;//courses is the name of collection and it should be in courseSchema type
+let courseModel = mongoose.model("courses",courseSchema); //courses is the name of collection and it should be in courseSchema type
 
 async function createCourse(){
     let data = new courseModel({
@@ -27,9 +27,9 @@ async function createCourse(){
         price:2000
     });
     let item = await data.save();
-    console.log(item);
+    //console.log(item);
 };
-//createCourse();
+createCourse();
 
 async function fetchCourses(){
     let courses = await courseModel
@@ -42,14 +42,49 @@ async function fetchCourses(){
         // })
         .find()
         //.and([{name:"MAK"}],[{price:200}])
-        .or([{name:"MAK"}],[{price:200}]) //adding conditions as an arrays
+        .or([{name:"MAK"}],[{price:2000}]) //adding conditions as an arrays
         .sort("-name") //- for descending
         .select("-price -isPublished")//use -to exclude
         .limit(3)
         ;
+        //console.log(courses);
 }
 fetchCourses();
 
+let userSchema = new mongoose.Schema({
+    tags:[String],
+    date: {type: Date, default: Date.now()},
+    name:{type:String},
+    author:{type:String},
+    isPublished: {type:Boolean},
+    price:{type:Number}
+
+});
+
+let userModel = mongoose.model("users",userSchema);
+
+async function fetchUsers(){
+    let users = await userModel
+    .find({tags:"backend"})
+    .sort("name")
+    .select("name author")
+    ;
+    //console.log(users);
+}
+
+fetchUsers();
+
+async function fetchUsers2(){
+    let users = await userModel
+    .find()
+    //.or([{tags:"frontend",tags:"backend"}])
+    .sort("-price")
+    .select("name author")
+    ;
+    console.log(users);
+}
+
+fetchUsers2();
 
 
 
