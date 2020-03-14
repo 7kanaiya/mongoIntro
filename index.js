@@ -3,7 +3,7 @@ let mongoose = require("mongoose");
 
 //Connecting to mongoose database
 mongoose
-    .connect("mongodb://localhost/kan") //connect is a promises type method. so giving the promises.
+    .connect("mongodb://localhost/kan",{useNewUrlParser: true,useUnifiedTopology: true}) //connect is a promises type method. so giving the promises.
     .then(()=>console.log("Database is connected"))
     .catch(error=>console.log("Something went wrong",error.message));
 
@@ -72,7 +72,7 @@ async function fetchUsers(){
     //console.log(users);
 }
 
-fetchUsers();
+//fetchUsers();
 
 async function fetchUsers2(){
     let users = await userModel
@@ -84,9 +84,55 @@ async function fetchUsers2(){
     console.log(users);
 }
 
-fetchUsers2();
+//fetchUsers2();
 
+//update users
 
+async function updateCourse(id){
+
+    //Query First Approach
+    //First data is found then updated and after that it is saved.
+    // let course = await courseModel.findById(id);
+    // if(!course){
+    //     return console.log("Invalid ID");
+    // }
+    // course.price = 8000;
+    // course = await course.save();
+    // console.log(course);
+    
+
+    //Update first approach
+    //Will save the data directly in db after update
+    // let course = await courseModel.update({_id:id},{
+    //     $set:{
+    //         price: 10000
+    //     }
+    // });
+    // console.log(course);
+    
+
+    //update using mongoose
+
+    let course = await courseModel.findByIdAndUpdate(id,{
+        $set:{
+            price:30000
+        }
+    },{ new:true}); //passed this flag to fetch the latest updated value in the console and not the previous value
+
+    console.log(course);
+}
+
+//updateCourse("5e6892669c8ea52f54029da7");
+
+//Removing the element by id
+
+async function removeCourse(id){
+    let course = await courseModel.findByIdAndRemove(id);
+    if(!course){ return console.log("Invalid ID")};
+    console.log("See you next time");
+}
+
+removeCourse("5e6892770cec313248d37e36");
 
 
 
